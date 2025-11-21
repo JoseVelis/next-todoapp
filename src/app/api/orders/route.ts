@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
-import { Prisma } from "@prisma/client";
 
 export async function POST(request: NextRequest) {
   try {
@@ -59,7 +58,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Crear la orden en una transacción
-    const order = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    const order = await prisma.$transaction(async (tx) => {
       // Crear la orden
       const newOrder = await tx.order.create({
         data: {
