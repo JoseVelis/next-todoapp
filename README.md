@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# E-commerce App con Next.js
 
-## Getting Started
+Aplicación de e-commerce completa construida con Next.js 16, Prisma, shadcn/ui, y más.
 
-First, run the development server:
+## Características
 
+- ✅ **App Router** de Next.js con Server Components
+- ✅ **Base de datos** con Prisma y Neon (PostgreSQL)
+- ✅ **Checkout completo** con validación usando Zod
+- ✅ **Estado global** con Context API y localStorage
+- ✅ **UI moderna** con shadcn/ui y Tailwind CSS
+- ✅ **Gestión de inventario** y órdenes
+- ✅ **Responsive design**
+
+## Configuración
+
+### 1. Instalar dependencias
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configurar base de datos
+1. Crea una cuenta en [Neon](https://neon.tech)
+2. Crea una nueva base de datos PostgreSQL
+3. Copia la connection string
+4. Actualiza `.env`:
+```env
+DATABASE_URL="tu-connection-string-de-neon"
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Ejecutar migraciones
+```bash
+npx prisma migrate dev --name init
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Poblar base de datos
+```bash
+npm run db:seed
+```
 
-## Learn More
+### 5. Ejecutar aplicación
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Estructura del proyecto
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+├── app/                    # Next.js App Router
+│   ├── api/               # API Routes
+│   ├── cart/              # Página del carrito
+│   ├── checkout/          # Checkout y confirmación
+│   ├── orders/            # Lista de órdenes
+│   └── product/[id]/      # Detalle de producto
+├── components/            # Componentes UI (shadcn/ui)
+├── prisma/                # Schema y migraciones
+├── src/
+│   ├── context/           # Context API para carrito
+│   ├── lib/              # Utilidades (Prisma client)
+│   ├── models/           # Tipos TypeScript
+│   └── utils/            # Funciones helper
+└── public/products/      # Imágenes de productos
+```
 
-## Deploy on Vercel
+## Tecnologías utilizadas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Next.js 16** - Framework React con App Router
+- **Prisma** - ORM para base de datos
+- **Neon** - Base de datos PostgreSQL en la nube
+- **shadcn/ui** - Componentes UI modernos
+- **Tailwind CSS** - Estilos utilitarios
+- **Zod** - Validación de esquemas
+- **React Hook Form** - Manejo de formularios
+- **TypeScript** - Tipado estático
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts disponibles
+
+- `npm run dev` - Servidor de desarrollo
+- `npm run build` - Build de producción
+- `npm run start` - Servidor de producción
+- `npm run lint` - Linting con ESLint
+- `npm run db:seed` - Poblar base de datos
+
+## Funcionalidades implementadas
+
+### 🛒 Carrito de compras
+- Agregar/remover productos
+- Persistencia con localStorage
+- Cálculo automático de totales
+
+### 💳 Checkout
+- Formulario validado con Zod
+- Creación de órdenes en DB
+- Actualización de inventario
+- Confirmación de pedido
+
+### 📦 Gestión de productos
+- CRUD completo con Prisma
+- Imágenes optimizadas con Next.js
+- Búsqueda y filtrado
+
+### 🎨 UI/UX
+- Diseño responsivo
+- Tema oscuro/claro
+- Componentes accesibles con shadcn/ui
+
+## Despliegue
+
+La aplicación está lista para desplegar en Vercel, Netlify, o cualquier plataforma que soporte Next.js.
+
+### Variables de entorno requeridas:
+- `DATABASE_URL` - Connection string de Neon
+
+## Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature
+3. Commit tus cambios
+4. Push a la rama
+5. Abre un Pull Request
