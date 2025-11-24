@@ -4,16 +4,31 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "../context/useCart";
+import { useSession, signOut } from "next-auth/react";
+import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 // Componente Header con tipado estricto
 export default function Header(): React.JSX.Element {
   const pathname: string = usePathname();
   const { getTotalItems } = useCart();
   const totalItems: number = getTotalItems();
+  const { data: session, status } = useSession();
 
   // Verificar si la ruta actual está activa
   const isActive = (path: string): boolean => {
     return pathname === path;
+  };
+
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/" });
   };
 
   return (
@@ -63,6 +78,58 @@ export default function Header(): React.JSX.Element {
               </span>
             )}
           </Link>
+
+          {/* Autenticación */}
+          {status === "loading" ? (
+            <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200"></div>
+          ) : session?.user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={session.user.image || ""} alt={session.user.name || ""} />
+                    <AvatarFallback>
+                      {session.user.name?.charAt(0).toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <div className="flex items-center justify-start gap-2 p-2">
+                  <div className="flex flex-col space-y-1 leading-none">
+                    {session.user.name && <p className="font-medium">{session.user.name}</p>}
+                    {session.user.email && (
+                      <p className="w-[200px] truncate text-sm text-muted-foreground">
+                        {session.user.email}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/profile">Perfil</Link>
+                </DropdownMenuItem>
+                {session.user.role === "ADMIN" && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin">Panel Admin</Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  Cerrar sesión
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" asChild>
+                <Link href="/login">Iniciar sesión</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/auth/signup">Registrarse</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </nav>
     </header>

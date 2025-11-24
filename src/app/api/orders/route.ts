@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-// import { prisma } from "@/src/lib/prisma";
-import { Prisma } from  "@prisma/client";
 import { prisma } from "@/src/lib/prisma";
+import { auth } from "@/src/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth()
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "No autorizado" },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { customerName, customerEmail, items, total } = body;
 
@@ -60,13 +68,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Crear la orden en una transacción
-    const order = await prisma.$transaction(async (tx:Prisma.TransactionClient) => {
+    const order = await prisma.$transaction(async (tx) => {
       // Crear la orden
       const newOrder = await tx.order.create({
         data: {
           customerName,
           customerEmail,
           total: calculatedTotal,
+          userId: session.user.id,
           items: {
             create: orderItems,
           },
@@ -105,9 +114,21 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const session = await auth()
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "No autorizado" },
+        { status: 401 }
+      );
+    }
+
     const orders = await prisma.order.findMany({
+      where: session.user.role === "ADMIN"
+        ? {} // Admin ve todas las órdenes
+        : { userId: session.user.id }, // Usuario normal ve solo sus órdenes
       include: {
         items: {
           include: {

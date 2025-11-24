@@ -127,6 +127,30 @@ const products = [
 async function main() {
   console.log('Seeding database...');
 
+  // Seed users
+  const adminUser = await prisma.user.upsert({
+    where: { email: 'admin@example.com' },
+    update: {},
+    create: {
+      email: 'admin@example.com',
+      name: 'Admin User',
+      role: 'ADMIN',
+    },
+  });
+
+  const regularUser = await prisma.user.upsert({
+    where: { email: 'user@example.com' },
+    update: {},
+    create: {
+      email: 'user@example.com',
+      name: 'Regular User',
+      role: 'USER',
+    },
+  });
+
+  console.log('Users seeded:', { adminUser, regularUser });
+
+  // Seed products
   for (const product of products) {
     await prisma.product.upsert({
       where: { slug: product.slug },
