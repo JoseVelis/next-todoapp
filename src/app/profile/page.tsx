@@ -1,10 +1,10 @@
 import { auth } from "@/src/lib/auth"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/src/components/ui/badge"
+import { Button } from "@/src/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar"
+import { Separator } from "@/src/components/ui/separator"
 import { prisma } from "@/src/lib/prisma"
 
 async function getUserOrders(userId: string) {
